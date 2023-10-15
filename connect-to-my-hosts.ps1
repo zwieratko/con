@@ -59,10 +59,11 @@ if (-Not (Test-Path $sshConfigFile -PathType Leaf)) {
 } else {
     <# Action when all if and elseif conditions are false #>
     $allHostsArray = Get-Content $sshConfigFile | Select-String "Host "
+    $allHostsArrayWithDivider = Get-Content $sshConfigFile | Select-String "Host " -Context 1,0
     $itemCount = $allHostsArray.count - 3
 }
-
-$listOfDivideValues = 1,9,13,17,18,21,23
+$dividerString = "##div"
+#$listOfDivideValues = 1,9,13,17,18,21,23
 $currentDateTime = Get-Date
 
 function getVersion {
@@ -70,7 +71,7 @@ function getVersion {
         $OptionalParameters
     )
     Write-Host "con - console OpenSSH connection manager"
-    Write-Host "Version: 0.0.1"
+    Write-Host "Version: 0.0.2"
     Exit
 }
 
@@ -82,8 +83,13 @@ function getHelp {
 
 The con - console OpenSSH connection manager.
 
-Help to establish SSH connection to target host.
-Display all available SSH host from config file if called without parameters.
+Helps you make an SSH connection to a target host.
+
+Show all available SSH hosts from the config file if called without parameters.
+
+The expected location for the OpenSSH client configuration file is, of course, "~/.ssh/config".
+The default delimiter for listing hosts is set to string: "##div".
+Feel free to change this if you like.
 
 Usage:
     con
@@ -125,14 +131,14 @@ function getAllHosts {
     Write-Host "======== My Servers ======== $currentDateTime ========"
     foreach ($elemNr in 0..$itemCount) {
         $menuItem = $allHostsArray[$elemNr] -replace "Host", $elemNr
+        if ($allHostsArrayWithDivider[$elemNr] -like "  $dividerString*") {
+            Write-Host
+        }
         if ($elemNr.tostring().Length -lt 2) {$menuItem = ' ' + $menuItem}
         Write-Host $menuItem
-        if ($elemNr -in $listOfDivideValues) {write-Host}
+        #if ($elemNr -in $listOfDivideValues) {write-Host}
     }
 
-    #Write-Host $listOfAllowed
-    #Write-Host $selection, '<---'
-    #Write-Host $listOfAllowed, '<---'
     Write-Host
     $selection = Read-Host "Please make a selection"
 
@@ -147,12 +153,16 @@ function testSelection {
     foreach ($elemNr in 0..$itemCount) {
         $listOfAllowed += $elemNr
     }
+    $debugMessage = "listOfAllowed=" + ($listOfAllowed)
+    Write-Debug $debugMessage
 
     if ($selectedHost -eq "") {
         $selection = getAllHosts
     } else {
         $selection = $selectedHost
     }
+    $debugMessage = "selection:" + ($selection)
+    Write-Debug $debugMessage
 
     if (($selection -notin $listOfAllowed) -or ($selection -eq '')) {
         write-Host "-> $selection <- Not allowed host, we have to quit. Bye."
@@ -188,7 +198,6 @@ switch ($PSBoundParameters.Keys) {
     }
 }
 
-Write-Host
 $selection = testSelection $sshHostSelect
 
 getNewConnection
