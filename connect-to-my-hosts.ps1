@@ -29,15 +29,15 @@ PS> con 3
 
 .NOTES
 Author: Radovan Snirc
-Version: 0.0.1
-Date: 2023-10-14
+Version: 0.0.3
+Date: 2023-10-24
 #>
 
 # Params
 param(
-	[Parameter()]
-	[string]
-	$sshHostSelect,
+    [Parameter()]
+    [string]
+    $sshHostSelect,
 
     [Parameter()]
     [switch]
@@ -71,7 +71,7 @@ function getVersion {
         $OptionalParameters
     )
     Write-Host "con - console OpenSSH connection manager"
-    Write-Host "Version: 0.0.2"
+    Write-Host "Version: 0.0.3"
     Exit
 }
 
@@ -93,6 +93,7 @@ Feel free to change this if you like.
 
 Usage:
     con
+    con <int>
     con [-s <int>]
     con [-v | -h]
 
