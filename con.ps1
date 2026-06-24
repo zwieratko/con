@@ -106,11 +106,11 @@ Options:
         For example: "2", "-s 2", "-ssh 2", "-sshHost 2", "-sshHostSelect 2"
 
     [ -v | -version ]
-        Display the actuall version of the cal program.
+        Display the actuall version of the con program.
         Additional parameters are ignored.
 
     [ -h | -help | -helpMe ]
-        Display this help information for the cal program.
+        Display this help information for the con program.
         Additional parameters are ignored.
 
 "@
